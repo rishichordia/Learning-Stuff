@@ -1,0 +1,47 @@
+// Concurreny_Introduction.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <vector>
+#include <thread>
+#include<mutex>
+
+using namespace std;
+mutex mtx_temp;
+
+int counter_temp = 0;
+void print(int id)
+{
+    lock_guard<mutex> lock(mtx_temp);
+    counter_temp++;
+    cout << "Counter :" << counter_temp << ". This is thread number "<<id<<" with id" << this_thread::get_id() << endl;
+}
+
+int Tempmain()
+{
+    cout << "Just checking" << endl;
+    thread t0(print, -1);
+    t0.join();
+    cout << "Hello World!\n";
+    vector<thread> threads;
+    for (int i = 0; i < 5; i++)
+    {
+        threads.push_back(thread(print,i));
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        threads[i].join();
+    }
+    return 0;
+}
+
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Debug program: F5 or Debug > Start Debugging menu
+
+// Tips for Getting Started: 
+//   1. Use the Solution Explorer window to add/manage files
+//   2. Use the Team Explorer window to connect to source control
+//   3. Use the Output window to see build output and other messages
+//   4. Use the Error List window to view errors
+//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
+//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
